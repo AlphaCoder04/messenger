@@ -1,6 +1,7 @@
+package org.example;
+
 import java.io.*;
 import java.net.*;
-
 public class Webserver {
     public static void main(String[] args) throws IOException {
         // Port, auf dem der Server lauschen soll
