@@ -1,4 +1,4 @@
-package org.example;
+package Web;
 
 import java.io.*;
 import java.net.*;
