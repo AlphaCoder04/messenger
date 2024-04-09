@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 public class LogIn {
     private static boolean exit = false;
-    private static Client client = new Client();
     private static GeneralDB db = new GeneralDB();
     public static void start() {
         System.out.println("Willkommen im Messenger");
@@ -23,8 +22,7 @@ public class LogIn {
                 registrieren();
                 break;
             case 3:
-                System.out.println("Beenden");
-                client.exit();
+                System.out.println("Auf Wiedersehen!");
                 break;
             default:
                 System.out.println("Falsche Eingabe");
@@ -37,7 +35,12 @@ public class LogIn {
         String benutzername = scanner.nextLine();
         System.out.println("Bitte geben Sie Ihr Passwort ein");
         String passwort = scanner.nextLine();
-        db.checkBenutzer(benutzername, passwort);
+        if(db.checkBenutzer(benutzername, passwort)){
+            System.out.println("Willkommen " + benutzername + "!");
+        } else {
+            System.out.println("Versuchen Sie es erneut!");
+            start();
+        }
     }
     public static void registrieren() {
         System.out.println("Bitte geben Sie Ihren Vornamen ein");

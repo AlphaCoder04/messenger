@@ -38,7 +38,8 @@ public class GeneralDB {
         ses.close();
     }
 
-    public void checkBenutzer(String benutzername, String passwort){
+    public boolean checkBenutzer(String benutzername, String passwort){
+        boolean success = false;
         Session ses = sf.openSession();
         ses.beginTransaction();
 
@@ -47,10 +48,13 @@ public class GeneralDB {
         List result = query.list();
         if(result.size() == 1){
             System.out.println("Erfolgreich eingeloggt");
+            success = true;
         } else {
             System.out.println("Falsche Eingabe");
+            success = false;
         }
         ses.getTransaction().commit();
         ses.close();
+        return success;
     }
 }
