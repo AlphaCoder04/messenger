@@ -13,6 +13,8 @@ public class Benutzer {
     private String vorname;
     @Column(name = "Nachname")
     private String nachname;
+    @Column(name="Benutzername")
+    private String benutzername;
     @Column(name = "Email")
     private String email;
     @Column(name = "Passwort")
@@ -22,9 +24,10 @@ public class Benutzer {
     @Column(name = "Profilbild")
     private String profilbild;
 
-    public Benutzer(String vorname, String nachname, String email, String passwort, String geburtsdatum, String profilbild) {
+    public Benutzer(String vorname, String nachname, String benutzername,String email, String passwort, String geburtsdatum, String profilbild) {
         this.vorname = vorname;
         this.nachname = nachname;
+        this.benutzername = benutzername;
         this.email = email;
         this.passwort = passwort;
         this.geburtsdatum = geburtsdatum;

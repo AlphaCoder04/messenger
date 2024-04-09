@@ -1,42 +1,47 @@
 package Web;
-
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpExchange;
 import java.io.*;
-import java.net.*;
+
 public class Webserver {
-    public static void main(String[] args) throws IOException {
-        // Port, auf dem der Server lauschen soll
-        int port = 8080;
-        
-        // Socket erstellen, um eingehende Verbindungen zu akzeptieren
-        ServerSocket serverSocket = new ServerSocket(port);
-        System.out.println("Web server listening on port " + port);
-        
-        while (true) {
-            // Auf eingehende Verbindungen warten
-            Socket clientSocket = serverSocket.accept();
-            System.out.println("New connection from " + clientSocket.getInetAddress().getHostAddress());
-            
-            // Einlesen der Anfrage vom Client
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String request = in.readLine();
-            System.out.println("Request: " + request);
-            
-            // Antwort an den Client senden
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            out.println("HTTP/1.1 200 OK");
-            out.println("Content-Type: text/html");
-            out.println();
-            out.println("<html>");
-            out.println("<head><title>Simple Web Server</title></head>");
-            out.println("<body>");
-            out.println("<h1>Hello, World!</h1>");
-            out.println("</body>");
-            out.println("</html>");
-            
-            // Aufräumen und Verbindung schließen
-            out.close();
-            in.close();
-            clientSocket.close();
+    public static void main(String[] args) throws Exception {
+        int port = 8080; // Portnummer, auf der der Server lauscht
+        HttpServer server = HttpServer.create(new java.net.InetSocketAddress(port), 0);
+        server.createContext("/", new MyHandler());
+        server.setExecutor(null); // Standard-Executor verwenden
+        server.start();
+        System.out.println("Server läuft auf Port " + port);
+    }
+
+    static class MyHandler implements HttpHandler {
+        public void handle(HttpExchange exchange) throws IOException {
+            try {
+                String requestMethod = exchange.getRequestMethod();
+                if (requestMethod.equalsIgnoreCase("GET")) {
+                    String response = readHtmlFile("/Users/alpha/Documents/GitHub/messenger/src/main/java/Web/login.html");
+                    exchange.sendResponseHeaders(200, response.getBytes().length);
+                    OutputStream os = exchange.getResponseBody();
+                    os.write(response.getBytes());
+                    os.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                exchange.sendResponseHeaders(500, 0); // Internal Server Error
+                OutputStream os = exchange.getResponseBody();
+                os.close();
+            }
         }
+    }
+
+    static String readHtmlFile(String filePath) throws IOException {
+        StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                contentBuilder.append(line).append("\n");
+            }
+        }
+        return contentBuilder.toString();
     }
 }
