@@ -25,6 +25,11 @@ public class GeneralDB {
             e.printStackTrace();
         }
     }
+
+    public SessionFactory getSf() {
+        return sf;
+    }
+
     public void closeSF(){
         sf.close();
     }
