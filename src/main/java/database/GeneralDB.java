@@ -8,6 +8,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class GeneralDB {
@@ -56,5 +57,50 @@ public class GeneralDB {
         ses.getTransaction().commit();
         ses.close();
         return success;
+    }
+
+    public void createChat(String typ){
+        Timestamp t = new Timestamp(System.currentTimeMillis());
+        Chats chat = new Chats(typ, t);
+        Session ses = sf.openSession();
+        ses.beginTransaction();
+        ses.save(chat);
+        ses.getTransaction().commit();
+        System.out.println("Chat:" + chat.getChatID() + " erstellt");
+        ses.close();
+    }
+    public void createNachricht(int chatID, int absenderID, String nachrichtenInhalt ){
+        Timestamp t = new Timestamp(System.currentTimeMillis());
+        Nachrichten nachricht = new Nachrichten(chatID, absenderID ,nachrichtenInhalt, t);
+        Session ses = sf.openSession();
+        ses.beginTransaction();
+        ses.save(nachricht);
+        ses.getTransaction().commit();
+        //System.out.println("Nachricht:" + nachricht.getNachrichtenID() + " erstellt");
+        ses.close();
+    }
+
+    public void showNachrichten(int chatID){
+        Session ses = sf.openSession();
+        ses.beginTransaction();
+        SQLQuery query = ses.createSQLQuery("SELECT * FROM Nachrichten WHERE ChatID = :chatID");
+        query.setParameter("chatID", chatID);
+        List result = query.list();
+        for (Object o : result) {
+            System.out.println(o);
+        }
+        ses.getTransaction().commit();
+        ses.close();
+    }
+    public void showChats(){
+        Session ses = sf.openSession();
+        ses.beginTransaction();
+        SQLQuery query = ses.createSQLQuery("SELECT * FROM Chats");
+        List result = query.list();
+        for (Object o : result) {
+            System.out.println(o);
+        }
+        ses.getTransaction().commit();
+        ses.close();
     }
 }
